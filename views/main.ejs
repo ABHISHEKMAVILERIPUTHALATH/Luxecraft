@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxe Resin Craft</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@1&family=Poppins&family=Faculty+Glyphic&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="main">
+        <div class="container">
+        <div class="navbar">
+            <div class="pagedetails">
+                <img src="/asset/logo.jpg" alt="">
+                
+                    <h1>Luxe Resin Craft</h1>
+            </div>
+            <div class="storedetails">
+                <ul>
+                    <a href="#home"><li>Home</li></a>
+                    <a href="#shop"><li>Shop</li></a> 
+                    <a href="#sections"><li>Earring</li></a>
+                    <a href="#sections"><li>Necklaces</li></a>
+                    <a href="#faqs"><li>Contact Us</li></a>
+                    <a href="#aboutus"><li>About Us</li></a>
+                </ul>
+
+            </div>  
+            <div class="pagefeature">
+                <div>
+                    <form action="/search" method="post">
+                        <input type="text" placeholder="Search" name="search">
+                        <button type="submit" ><i class="material-icons">search</i></button>
+                    </form>
+                </div>
+                <a href="/cartlist"><i class="material-icons">shopping_cart</i></a>
+                <%if(locals.user){ %>
+                 <i id="profile" class="material-icons"  >person</i>
+                 <div class="hidden" id="box">
+                    <p id="closebtn">cancel</p>
+                    <p><%= user.displayname %></p>
+                    <p><%= user.email %></p>
+                     <a href="/changepassword">change password</a>
+                     <a href="/logout">logout</a>
+
+
+                 </div>
+
+                <%}else{ %>
+                <a id="person" href="/login"> <i class="material-icons"  >person</i></a>
+                <%} %>
+            </div>
+        </div>
+    <div id="home" class="introduction">
+        <div class="big">
+            <h2>New collection</h2>
+            <h1>Handcrafted design</h1>
+            <p>Here’s a simple CSS snippet that can replicate the design from the image you provided.</p>
+            <button>shop now</button>
+            <img src="/asset/logo.jpg" alt="">
+        </div>
+        <div class="small upper">
+            <div class="information display">
+                <h2>New collection</h2>
+                <h1>Handcrafted design</h1>
+                <p>description</p>
+                <button>shop now</button>
+            </div>
+            <div class="photo">
+                <img src="/asset/logo.jpg" alt="">
+            </div>
+            
+        </div>
+        <div class="small lower">
+            <div class="information display">
+                <h2>New collection</h2>
+                <h1>Handcrafted design</h1>
+                <p>description</p>
+                <button>shop now</button>
+            </div>
+            <div class="photo">
+                <img src="/asset/logo.jpg" alt="">
+            </div>
+            
+        </div>
+    </div>
+    
+    <div class="feature">
+        <img src="/asset/logo.jpg" alt="">
+        <img src="/asset/logo.jpg" alt="">
+        <img src="/asset/logo.jpg" alt="">
+        <img src="/asset/logo.jpg" alt="">
+    </div>
+    <div id="sections" class="categories display">
+        <div class="title">
+            <h2 class="font-color">Our Categories</h2>
+            <h1>Shop By Catogory</h1>
+         </div>
+        <div>
+            <div>
+                <img src="/asset/logo.jpg" alt="">
+                <h3>jlksdjf</h3>
+            </div>
+            <div>
+                <img src="/asset/logo.jpg" alt="">
+                <h3>kfjslk</h3>
+            </div>
+            <div>
+                <img src="/asset/logo.jpg" alt="">
+                <h3>dfkj</h3>
+            </div>
+            <div>
+                <img src="/asset/logo.jpg" alt="">
+                <h3>sdkfjd</h3>
+            </div>
+            <div>
+                <img src="/asset/logo.jpg" alt="">
+                <h3>dmfsdlkjd</h3>
+            </div>
+            <div>
+                <img src="/asset/logo.jpg" alt="">
+                <h3>dlknfsdlk</h3>
+            </div>
+            
+            
+        </div>
+        <div>
+            <img src="/asset/logo.jpg" alt="">
+        </div>
+        
+    </div>
+    <div id="shop" class="newcollection">
+        <div class="title">
+            <h2 class="font-color">New collection</h2>
+            <h1>Trendy Design Collection</h1>
+        </div>
+        
+        <div class="store">
+            <% if(product){%>
+            <% product.forEach((item) => { %>
+            <div class="product">
+                <div class="image-setup">
+                    <div>
+                        <img src="<%= item.img %>" alt="">
+                    </div>
+                    <div class="overlay-icons display">
+                        <span class="material-symbols-outlined">open_in_full</span>
+                        <span  class="material-symbols-outlined">favorite</span>
+                        <a href="/cart/<%= item.id %>"><span class="material-symbols-outlined">shopping_bag</span></a>
+                    </div>
+                    
+                </div>
+                <div class="info ">
+                    <span class="Product-category"><%= item.itemname %></span>
+                    <span class="Product-name"><%= item.productname %></span>
+                    <span class="price">$ <%=item.price %></span>
+                    <span><%= item.description %></span>
+                </div>
+            </div>
+
+       <% }); } %>
+        </div>
+            
+    </div>
+    <div id="about" class="faqs">
+        <div class="title">
+            <h2 class="font-color">FAQS</h2>
+            <h1>Questions?Look here</h1>
+        </div>
+        <div class="qa display">
+            <div class="display">
+                <div>
+                    <span>what are your qureries</span>
+                    <span>+</span>
+                </div>
+                <span>answer</span>
+            </div>
+
+        </div>
+    </div>
+    <div class="about"></div>
+    <div class="footer">
+
+    </div>
+   </div>
+</div>
+<script>
+    const box=document.getElementById('box');
+    const closebtn=document.getElementById('closebtn');
+   document.getElementById('profile').addEventListener('click',(e)=>{
+       console.log('clicked');
+    box.classList.toggle('hidden');
+    
+   })
+   closebtn.addEventListener('click',(e)=>{
+    box.classList.add('hidden')
+   })
+</script>
+</body>
+</html>

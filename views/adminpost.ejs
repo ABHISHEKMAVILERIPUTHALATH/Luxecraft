@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>post</title>
+</head>
+<body>
+    <% if(locals.post){ %>  
+        <form id="productForm" action="/adminpost/<%= post.id %>" method="post"  enctype="multipart/form-data">
+            <input type="text" name="itemname" placeholder="item" value="<%= post.itemname %>" >
+            <input type="text" name="productname" placeholder="Product name" value="<%= post.productname%>" >
+            <input type="number" name="price" placeholder="product price" <%= post.price %>>
+            <textarea type="text" name="description" placeholder="description" ><%= post.description %></textarea>
+            <input type="file" name="img" placeholder="upload image" value="<%= post.img %>">
+            <button type="submit"><%=action%></button>
+        </form>
+
+   <% }else{ %> 
+     <form id="productForm" action="/adminpost" method="post"  enctype="multipart/form-data">
+        <input type="text" name="itemname" placeholder="item" >
+        <input type="text" name="productname" placeholder="Product name" >
+        <input type="number" name="price" placeholder="product price" >
+        <textarea type="text" name="description" placeholder="description" ></textarea>
+        <input type="file" name="img" placeholder="upload image">
+        <button type="submit"><%=action%></button>
+    </form>
+    <% } %>
+</body>
+</html>

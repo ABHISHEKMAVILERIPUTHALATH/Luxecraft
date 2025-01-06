@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="login">
+    <div class="login-container">
+        <h1>Sign Up</h1>
+        <form  id="myForm" action="/signup" method="post">
+            <input type="text" placeholder="Username" name="username" required>
+            <input type="email" placeholder="Email" name="email" required>
+            <input id="password" type="password" placeholder="Password" name="password" required minlength="6">
+            <input id="confirmpassword" type="password" placeholder="Confirm Password" name="confirmpassword" required>
+            <p id="errormessage" style="color: red; "><%=locals.error %></p>
+            <button type="submit">Sign Up</button>
+            <button type="button" class="google-button">Sign Up with Google</button>
+        </form>
+        <p>Already have an account? <a href="/login">Login</a></p>
+    </div>
+</div>
+<script>
+
+    const password=document.getElementById('password');
+    const confirmpassword=document.getElementById('confirmpassword');
+    const errormessage=document.getElementById('errormessage');
+    const buttongoogle=document.querySelector('.google-button');
+
+
+        confirmpassword.addEventListener('input',()=>{
+        if(password.value === confirmpassword.value){
+            errormessage.textContent='Password match';
+            errormessage.style.color='green';
+        }else{
+            event.preventDefault();
+            errormessage.textContent='Password mismatch! try again';
+        }
+    })
+  
+
+</script>
+</body>
+</html>

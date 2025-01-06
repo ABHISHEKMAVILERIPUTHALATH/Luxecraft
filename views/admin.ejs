@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- to view inserted image modify edit  -->
+
+    <div>
+        <div>
+            <div>
+                <img src="" alt="">
+                <h2>Luxe resin craft</h2>
+            </div>
+                <a href="/adminpost"> New post</a>
+                <a href="/logout">Logout</a>
+        </div>
+        <div id="itemview">
+            <span>item</span>
+            <span>product name</span>
+            <span>price</span>
+            <span>description</span>
+            <span>img</span>
+            
+            
+        </div>
+        <% if(product){%>
+            <% product.forEach((item) => { %>
+        <div id="itemview">
+            <span><%= item.itemname %></span>
+            <span><%= item.productname %></span>
+            <span><%=item.price %></span>
+            <span><%= item.description %></span>
+            <img src="<%= item.img %>" alt="">
+            <a href="/adminedit/<%=item.id%>">edit</a>
+            <a href="/admindelete/<%=item.id%>">delete</a>
+        </div>
+        <% })} %>
+    </div>
+</body>
+</html>

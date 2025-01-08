@@ -12,6 +12,10 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@1&family=Poppins&family=Faculty+Glyphic&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
     <div class="main">
         <div class="container">
         <div class="navbar">
@@ -150,7 +154,7 @@
                     </div>
                     <div class="overlay-icons display">
                         <span class="material-symbols-outlined">open_in_full</span>
-                        <span  class="material-symbols-outlined">favorite</span>
+                       <!-- <a href="/togglefavorite/<%= item.id %>" ><span  class="material-symbols-outlined  favorite-icon <%= item.isfavorited %>? favorited :''">favorite</span></a>  -->
                         <a href="/cart/<%= item.id %>"><span class="material-symbols-outlined">shopping_bag</span></a>
                     </div>
                     
@@ -200,6 +204,9 @@
    closebtn.addEventListener('click',(e)=>{
     box.classList.add('hidden')
    })
+
+
+
 </script>
 </body>
 </html>

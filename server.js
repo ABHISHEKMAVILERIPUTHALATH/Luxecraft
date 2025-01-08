@@ -77,17 +77,25 @@ const upload = multer({ storage });
 
 app.get('/',async(req,res)=>{
 
-    const result= await db.query('SELECT * FROM public.product');
     console.log('connection established');
-
+    const fav=await db.query('');
+    // console.log(fav.rows[0])
     if (req.isAuthenticated()){
-        console.log(req.user);
-        res.render('main.ejs',{
+        const result = await db.query(`
+            SELECT p.id, p.productname, p.price, p.description, p.img, 
+                   CASE WHEN f.userid IS NOT NULL THEN true ELSE false END AS isFavorited
+            FROM product p
+            LEFT JOIN favorites f ON p.id = f.productid AND f.userid = $1;
+        `, [req.user.id]);
+        console.log(result.rows);
+        
+         res.render('main.ejs',{
             loggedIn:true,
             user:req.user,
             product:result.rows});
-    }
-    else{
+        }
+        else{
+        const result= await db.query('SELECT * FROM public.product');
         res.render('main.ejs',{product:result.rows});
     }
 })
@@ -426,81 +434,147 @@ app.post('/changepassword', async (req, res) => {
 });
 
 
-app.get('/cart/:id',async(req,res)=>{
-    if(req.isAuthenticated()){
-        const user=req.user;
-        const id=req.params.id;
-        const response=await db.query('SELECT * FROM product WHERE id=$1',[id])
-        const product=response.rows[0]
-        console.log(product);
-        
-        if(response){
-            try {
-                const duplicateCheck = await db.query(
-                    'SELECT * FROM cart WHERE email = $1 AND productname = $2',
-                    [user.email, product.productname]
-                );
-            
-                if (duplicateCheck.rows.length > 0) {
-                    return res.status(400).send('This item is already in your cart.');
-                }
-            
-                // Proceed with insertion
-                const cart = await db.query(
-                    'INSERT INTO cart(email, itemname, productname, price, description, img) VALUES($1, $2, $3, $4, $5, $6)',
-                    [user.email, product.itemname, product.productname, product.price, product.description, product.img]
-                );
-            
-                res.redirect('/');
-            } catch (err) {
-                console.error('Error adding to cart:', err);
-                res.status(500).send('An error occurred.');
+app.get('/cart/:id', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const user = req.user; // The authenticated user
+        const productId = req.params.id; // Product ID from the route parameter
+
+        try {
+            // Fetch the product details from the product table
+            const productResponse = await db.query('SELECT * FROM product WHERE id = $1', [productId]);
+            const product = productResponse.rows[0];
+
+            if (!product) {
+                return res.status(404).send('Product not found.');
             }
-            
-        console.log(response)
-    }else{
-        res.redirect('/login');
-    }
-}})
 
+            // Check if the product is already in the user's cart
+            const duplicateCheck = await db.query(
+                'SELECT * FROM cart WHERE userid = $1 AND productid = $2',
+                [user.id, productId]
+            );
 
-app.get('/cartlist',async(req,res)=>{
+            if (duplicateCheck.rows.length > 0) {
+                return res.status(400).send('This item is already in your cart.');
+            }
 
-    if(req.isAuthenticated()){
-      try{
-        const useremail=req.user.email
-        const response=await db.query('SELECT * FROM cart WHERE email=$1',[useremail])
-        const cartdata=response.rows;
-        console.log(cartdata.length);
-        res.render('cartlist.ejs',{cartdata:cartdata});
-      }catch(error){
-        console.log('fetching error in cartlist');
-        
-      }
-    }else{
-        res.redirect('/login')
+            // Insert the product into the cart
+            await db.query(
+                'INSERT INTO cart (userid, productid, quantity) VALUES ($1, $2, $3)',
+                [user.id, productId, 1] // Default quantity is 1
+            );
+
+            res.redirect('/'); // Redirect the user back to the homepage
+        } catch (err) {
+            console.error('Error adding to cart:', err);
+            res.status(500).send('An error occurred while adding the item to your cart.');
+        }
+    } else {
+        res.redirect('/login'); // Redirect unauthenticated users to the login page
     }
 });
 
-app.get('/cartremove/:id',async(req,res)=>{
-    const id=req.params.id;
-    const user=req.user.email
-    try{
-        const response=await db.query('SELECT * FROM cart WHERE id=$1 AND email=$2 ',[id,user])
-        if(response.rows[0]!=0){
-            const deletecart=await db.query('DELETE FROM cart  WHERE id=$1 AND email=$2 ',[id,user])
-            res.redirect('/cartlist')
+
+
+app.get('/cartlist', async (req, res) => {
+    if (req.isAuthenticated()) {
+        try {
+            const userId = req.user.id; // Get the authenticated user's ID
+            
+            // Fetch cart data along with product details
+            const response = await db.query(
+                `SELECT c.id AS cart_id,p.id, p.productname, p.price, p.description, p.img, c.quantity, c.created
+                 FROM cart c
+                 INNER JOIN product p ON c.productid = p.id
+                 WHERE c.userid = $1`,
+                [userId]
+            );
+
+            const cartData = response.rows;
+            console.log(`Cart items: ${cartData.length}`);
+            console.log(cartData);
+            
+            // Render the cart list page and pass the cart data
+            res.render('cartlist.ejs', { cartdata: cartData });
+        } catch (error) {
+            console.error('Error fetching cart data:', error);
+            res.status(500).send('An error occurred while fetching your cart.');
         }
-    }catch(e){
-
+    } else {
+        res.redirect('/login'); // Redirect unauthenticated users to the login page
     }
-})
-// app.get('/favorite/:id',(req,res)=>{
-//     const id=req.params.id;
-//     const response=db.query('SELECT * FROM favorite WHERE productid=$1',[id])
-//     console.log(response.rows[0]>0 )
+});
 
-// })
+
+app.get('/cartremove/:id', async (req, res) => {
+    if(req.isAuthenticated()){
+        const cartId = req.params.id; // The cart item ID to remove
+        const userId = req.user.id; // Get the authenticated user's ID
+
+    try {
+        // Check if the cart item exists for the user
+        const response = await db.query('SELECT * FROM cart WHERE id = $1 AND userid = $2', [cartId, userId]);
+        console.log(response.rows);
+        
+        console.log(`Cart ID: ${cartId}, User ID: ${userId}`);
+        if (response.rows.length > 0) {
+            // If the cart item exists, delete it
+            await db.query('DELETE FROM cart WHERE id = $1 AND userid = $2', [cartId, userId]);
+            res.redirect('/cartlist'); // Redirect to the cart list page
+        } else {
+            res.status(404).send('Cart item not found or you do not have permission to delete it.');
+        }
+    } catch (err) {
+        console.error('Error removing item from cart:', err);
+        res.status(500).send('An error occurred while removing the item from your cart.');
+    }
+    }
+    
+});
+
+// app.get('/togglefavorite/:productid', async (req, res) => {
+//     const productId = req.params.productid; 
+    
+//     // The product ID to toggle favorite
+
+//     if(req.isAuthenticated()){
+
+//         const userId = req.user.id; // Get the authenticated user's ID
+
+//     try {
+//         // Check if the product is already in the user's favorites
+//         const checkFavorite = await db.query(
+//             'SELECT * FROM favorites WHERE userid = $1 AND productid = $2',
+//             [userId, productId]
+//         );
+
+//         if (checkFavorite.rows.length > 0) {
+//             // If the product is already in favorites, remove it
+//             await db.query(
+//                 'DELETE FROM favorites WHERE userid = $1 AND productid = $2',
+//                 [userId, productId]
+//             );
+//         } else {
+//             // If the product is not in favorites, add it
+//            const insert= await db.query(
+//                 'INSERT INTO favorites (userid, productid) VALUES ($1, $2)',
+//                 [userId, productId]
+//             );
+//             console.log(insert.rows);
+            
+//         }
+
+//         // Redirect back to the same page to update the heart icon
+//         res.location(req.get("Referrer") || "/");
+//     } catch (err) {
+//         console.error('Error toggling favorite:', err);
+//         res.status(500).send('An error occurred while toggling the product in your favorites.');
+//     }
+//     }
+    
+// });
+
+
 
 passport.serializeUser((user,cb)=>{
     cb(null,user)

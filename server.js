@@ -1,10 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import session from 'express-session';
-// import { createUserWithEmailAndPassword,updateProfile } from "firebase/auth";
-// import { signInWithEmailAndPassword } from "firebase/auth";
-// import { auth } from "./firebase.js"; 
-// import './firebase.js'
 import passport from 'passport';
 import { Strategy } from 'passport-local';
 import env from 'dotenv';
@@ -14,8 +10,6 @@ import bcrypt from "bcrypt";
 import multer from 'multer';
 import fs from 'fs';
 import axios from 'axios';
-import { log } from 'console';
-// import { log } from 'console';
 
 //port and express declaration
 const port=3000;
@@ -78,8 +72,6 @@ const upload = multer({ storage });
 app.get('/',async(req,res)=>{
 
     console.log('connection established');
-    const fav=await db.query('');
-    // console.log(fav.rows[0])
     if (req.isAuthenticated()){
         const result = await db.query(`
             SELECT p.id, p.productname, p.price, p.description, p.img, 
@@ -87,7 +79,6 @@ app.get('/',async(req,res)=>{
             FROM product p
             LEFT JOIN favorites f ON p.id = f.productid AND f.userid = $1;
         `, [req.user.id]);
-        console.log(result.rows);
         
          res.render('main.ejs',{
             loggedIn:true,
@@ -102,20 +93,11 @@ app.get('/',async(req,res)=>{
 
 app.get('/login',(req,res)=>{
         res.render('login.ejs',{error:''});
-}
-);
+});
     
 app.get('/signup',(req,res)=>{
     res.render('signup.ejs');
 });
-
-// app.post('/login',
-//     passport.authenticate('local',{
-//         successRedirect:'/',
-//         failureRedirect:'/signup'
-//     }), // Handle failure
-// );
-
 
 app.post('/login', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
@@ -455,7 +437,7 @@ app.get('/cart/:id', async (req, res) => {
             );
 
             if (duplicateCheck.rows.length > 0) {
-                return res.status(400).send('This item is already in your cart.');
+                return res.status(400).json('This item is already in your cart.');
             }
 
             // Insert the product into the cart
@@ -463,8 +445,8 @@ app.get('/cart/:id', async (req, res) => {
                 'INSERT INTO cart (userid, productid, quantity) VALUES ($1, $2, $3)',
                 [user.id, productId, 1] // Default quantity is 1
             );
-
-            res.redirect('/'); // Redirect the user back to the homepage
+            res.redirect('/')
+            // res.status(200).json('item added')// Redirect the user back to the homepage
         } catch (err) {
             console.error('Error adding to cart:', err);
             res.status(500).send('An error occurred while adding the item to your cart.');
@@ -495,6 +477,7 @@ app.get('/cartlist', async (req, res) => {
             console.log(cartData);
             
             // Render the cart list page and pass the cart data
+
             res.render('cartlist.ejs', { cartdata: cartData });
         } catch (error) {
             console.error('Error fetching cart data:', error);
@@ -531,50 +514,6 @@ app.get('/cartremove/:id', async (req, res) => {
     }
     
 });
-
-// app.get('/togglefavorite/:productid', async (req, res) => {
-//     const productId = req.params.productid; 
-    
-//     // The product ID to toggle favorite
-
-//     if(req.isAuthenticated()){
-
-//         const userId = req.user.id; // Get the authenticated user's ID
-
-//     try {
-//         // Check if the product is already in the user's favorites
-//         const checkFavorite = await db.query(
-//             'SELECT * FROM favorites WHERE userid = $1 AND productid = $2',
-//             [userId, productId]
-//         );
-
-//         if (checkFavorite.rows.length > 0) {
-//             // If the product is already in favorites, remove it
-//             await db.query(
-//                 'DELETE FROM favorites WHERE userid = $1 AND productid = $2',
-//                 [userId, productId]
-//             );
-//         } else {
-//             // If the product is not in favorites, add it
-//            const insert= await db.query(
-//                 'INSERT INTO favorites (userid, productid) VALUES ($1, $2)',
-//                 [userId, productId]
-//             );
-//             console.log(insert.rows);
-            
-//         }
-
-//         // Redirect back to the same page to update the heart icon
-//         res.location(req.get("Referrer") || "/");
-//     } catch (err) {
-//         console.error('Error toggling favorite:', err);
-//         res.status(500).send('An error occurred while toggling the product in your favorites.');
-//     }
-//     }
-    
-// });
-
-
 
 passport.serializeUser((user,cb)=>{
     cb(null,user)

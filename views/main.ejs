@@ -12,10 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@1&family=Poppins&family=Faculty+Glyphic&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="loading" style="display: none;">
-        <div class="spinner"></div>
-        <p>Loading...</p>
-    </div>
+    <div id="toast-container"></div>
+    <div id="loader" class="spinner"></div>
     <div class="main">
         <div class="container">
         <div class="navbar">
@@ -37,10 +35,9 @@
             </div>  
             <div class="pagefeature">
                 <div>
-                    <form action="/search" method="post">
-                        <input type="text" placeholder="Search" name="search">
-                        <button type="submit" ><i class="material-icons">search</i></button>
-                    </form>
+                
+                        <input id="search" type="text" placeholder="Search" name="search">
+                        <button onclick="search()" ><i class="material-icons">search</i></button>
                 </div>
                 <a href="/cartlist"><i class="material-icons">shopping_cart</i></a>
                 <%if(locals.user){ %>
@@ -138,6 +135,7 @@
         </div>
         
     </div>
+    
     <div id="shop" class="newcollection">
         <div class="title">
             <h2 class="font-color">New collection</h2>
@@ -150,12 +148,12 @@
             <div class="product">
                 <div class="image-setup">
                     <div>
-                        <img src="<%= item.img %>" alt="">
+                        <img id="fullimage" src="<%= item.img %>" alt="">
                     </div>
                     <div class="overlay-icons display">
-                        <span class="material-symbols-outlined">open_in_full</span>
+                        <span id="fullscreen" class="material-symbols-outlined">open_in_full</span>
                        <!-- <a href="/togglefavorite/<%= item.id %>" ><span  class="material-symbols-outlined  favorite-icon <%= item.isfavorited %>? favorited :''">favorite</span></a>  -->
-                        <a href="/cart/<%= item.id %>"><span class="material-symbols-outlined">shopping_bag</span></a>
+                        <a href="/cart/<%= item.id %>"  ><span class="material-symbols-outlined">shopping_bag</span></a>
                     </div>
                     
                 </div>
@@ -169,7 +167,6 @@
 
        <% }); } %>
         </div>
-            
     </div>
     <div id="about" class="faqs">
         <div class="title">
@@ -189,21 +186,24 @@
     </div>
     <div class="about"></div>
     <div class="footer">
-
+        
     </div>
    </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-    const box=document.getElementById('box');
-    const closebtn=document.getElementById('closebtn');
-   document.getElementById('profile').addEventListener('click',(e)=>{
-       console.log('clicked');
-    box.classList.toggle('hidden');
-    
-   })
-   closebtn.addEventListener('click',(e)=>{
-    box.classList.add('hidden')
-   })
+
+        const box=document.getElementById('box');
+        const closebtn=document.getElementById('closebtn');
+       document.getElementById('profile').addEventListener('click',(e)=>{
+           console.log('clicked');
+        box.classList.toggle('hidden');
+        
+       })
+       closebtn.addEventListener('click',(e)=>{
+        box.classList.add('hidden')
+       });
+
 
 
 

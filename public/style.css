@@ -429,19 +429,69 @@ body{
 .hidden{
     display: none;
 }
+
+
+/* Spinner styles */
 .spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-top: 4px solid #3498db;
+    display: none;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     animation: spin 1s linear infinite;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
+
+/* Animation for the spinner */
 @keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.toast {
+    visibility: hidden; /* Initially hidden */
+    min-width: 250px; /* Minimum width of the toast */
+    margin-left: -125px;  /* Half the width to center it */
+    background-color: #333; /* Default background color (dark gray) */
+    color: #fff; /* Text color is white */
+    text-align: center; /* Center the text inside the toast */
+    border-radius: 5px; /* Rounded corners */
+    position: fixed; /* Fix the toast to the screen */
+    z-index: 9999; /* Ensure the toast is on top of other elements */
+    top: 30px; /* Position it 30px from the top of the screen */
+    left: 50%; /* Center it horizontally */
+    padding: 10px; /* Padding inside the toast */
+    font-size: 16px; /* Text size */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow around the toast */
+    opacity: 0; /* Initially transparent */
+    transition: opacity 0.3s ease-in-out; /* Smooth transition when showing or hiding */
+}
+
+.toast.show {
+    visibility: visible; /* Make the toast visible */
+    opacity: 1; /* Fully opaque (show the toast) */
+}
+
+.toast.success {
+    background-color: green; /* Success toast with a green background */
+}
+
+.toast.error {
+    background-color: red; /* Error toast with a red background */
+}
+
+.toast.warning {
+    background-color: yellow; /* Warning toast with a yellow background */
+    color: black; /* Text color is black for better contrast */
+}
+
+/* Icon styling */
+.icon {
+    margin-right: 10px; /* Space between icon and text */
+    font-size: 20px; /* Make the icon slightly bigger */
+    vertical-align: middle; /* Align icon with the text */
 }

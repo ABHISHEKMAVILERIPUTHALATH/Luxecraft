@@ -20,7 +20,7 @@
                     <span><%= item.price %></span>
                 </div>
                 <a href="/cartremove/<%= item.cart_id %>">remove from cart</a>
-                <a href="">buynow</a>
+                <a href="/buy/<%= item.cart_id  %>">buynow</a>
           <%  }) %>
             <%  }else{%>
                 <h1>your cart is empty</h1>

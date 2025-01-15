@@ -72,6 +72,7 @@ const upload = multer({ storage });
 app.get('/',async(req,res)=>{
 
     console.log('connection established');
+    const category=await db.query('SELECT DISTINCT ON (c.item) p.id AS product_id, p.productname, p.price, p.description, p.img, c.item AS itemname FROM product p JOIN category c ON p.id = c.productid ORDER BY c.item, p.id;')
     if (req.isAuthenticated()){
         const result = await db.query(`
             SELECT p.id, p.productname, p.price, p.description, p.img, 
@@ -79,15 +80,15 @@ app.get('/',async(req,res)=>{
             FROM product p
             LEFT JOIN favorites f ON p.id = f.productid AND f.userid = $1;
         `, [req.user.id]);
-        
-         res.render('main.ejs',{
+        res.render('main.ejs',{
             loggedIn:true,
             user:req.user,
-            product:result.rows});
+            product:result.rows,
+            categories:category.rows});
         }
         else{
-        const result= await db.query('SELECT * FROM public.product');
-        res.render('main.ejs',{product:result.rows});
+            const result= await db.query('SELECT * FROM public.product');
+        res.render('main.ejs',{product:result.rows,categories:category.rows});
     }
 })
 
@@ -176,6 +177,37 @@ app.post('/signup',async(req,res)=>{
 });
 
 
+
+app.get('/search',async(req,res)=>{
+   const {item}=req.query;
+   try {
+    const query = `
+        SELECT 
+            p.id AS product_id, 
+            p.productname, 
+            p.price, 
+            p.description, 
+            p.img, 
+            c.item AS itemname
+        FROM 
+            product p
+        JOIN 
+            category c ON p.id = c.productid
+        WHERE 
+            LOWER(c.item) LIKE LOWER($1) OR LOWER(p.productname) LIKE LOWER($1) OR LOWER(p.description) LIKE LOWER($1) ;
+    `;
+    const result = await db.query(query, [`%${item}%`]); // Use parameterized query for security
+    console.log(result.rows);
+    
+    res.json(result.rows); // Send search results as JSON
+} catch (error) {
+    console.error('Error fetching search results:', error);
+    res.status(500).send('Internal Server Error');
+}
+    
+})
+
+
 passport.use(new Strategy({ usernameField: 'email' }, async function verify(email, password, cb) {
     try {
         // Query the database for the user by email
@@ -250,9 +282,11 @@ app.post('/adminpost', upload.single('img'), async (req, res) => {
             description || null,
             `images/${req.file.filename}`, // Path to uploaded file
         ];
-    
+        
         // Execute Query
         const result = await db.query(query, values);
+        
+        const category=await db.query('INSERT INTO category(item,productid) VALUES($1,$2)',[result.rows[0].itemname,result.rows[0].id])
         res.redirect("/admin")
     
         // Respond with Success
@@ -427,7 +461,7 @@ app.get('/cart/:id', async (req, res) => {
             const product = productResponse.rows[0];
 
             if (!product) {
-                return res.status(404).send('Product not found.');
+                return res.status(404).json('Product not found.');
             }
 
             // Check if the product is already in the user's cart
@@ -445,14 +479,14 @@ app.get('/cart/:id', async (req, res) => {
                 'INSERT INTO cart (userid, productid, quantity) VALUES ($1, $2, $3)',
                 [user.id, productId, 1] // Default quantity is 1
             );
-            res.redirect('/')
-            // res.status(200).json('item added')// Redirect the user back to the homepage
+
+            res.status(200).json('Item added successfully')// Redirect the user back to the homepage
         } catch (err) {
             console.error('Error adding to cart:', err);
             res.status(500).send('An error occurred while adding the item to your cart.');
         }
     } else {
-        res.redirect('/login'); // Redirect unauthenticated users to the login page
+        res.status(401).json('Required authentication,Try loggin in') // Redirect unauthenticated users to the login page
     }
 });
 
@@ -475,16 +509,14 @@ app.get('/cartlist', async (req, res) => {
             const cartData = response.rows;
             console.log(`Cart items: ${cartData.length}`);
             console.log(cartData);
-            
             // Render the cart list page and pass the cart data
-
             res.render('cartlist.ejs', { cartdata: cartData });
         } catch (error) {
             console.error('Error fetching cart data:', error);
             res.status(500).send('An error occurred while fetching your cart.');
         }
     } else {
-        res.redirect('/login'); // Redirect unauthenticated users to the login page
+        res.status(401).json('Authentication required ,Try loggin in') // Redirect unauthenticated users to the login page
     }
 });
 
@@ -513,6 +545,80 @@ app.get('/cartremove/:id', async (req, res) => {
     }
     }
     
+});
+
+app.get('/toggle/:productid', async (req, res) => {
+    const productId = req.params.productid; 
+    
+   if(req.isAuthenticated()){
+    const userId = req.user.id; // Get the authenticated user's ID
+
+    try {
+        // Check if the product is already in the user's favorites
+        const checkFavorite = await db.query(
+            'SELECT * FROM favorites WHERE userid = $1 AND productid = $2',
+            [userId, productId]
+        );
+
+        if (checkFavorite.rows.length > 0) {
+            // If the product is already in favorites, remove it
+            await db.query(
+                'DELETE FROM favorites WHERE userid = $1 AND productid = $2',
+                [userId, productId]
+            );
+            console.log('item deleted')
+            res.status(200).json({value:"False",message:'added success fully'})
+        } else {
+            // If the product is not in favorites, add it
+            await db.query(
+                'INSERT INTO favorites (userid, productid) VALUES ($1, $2)',
+                [userId, productId]
+            );
+            console.log('item added')
+            res.status(200).json({value:"True",message:'added success fully'})
+        }
+        // Redirect back to the same page to update the heart icon
+    } catch (err) {
+        console.error('Error toggling favorite:', err);
+        res.status(500).send('An error occurred while toggling the product in your favorites.');
+    }
+   }else{
+    res.status(401).json('Authentication is required ,Try loggin in')
+   }
+    
+});
+
+app.get('/buy/:cartid',(req,res)=>{
+    res.render('address.ejs')
+})
+
+
+app.post('/submitaddress', async (req, res) => {
+    const { fullName, phone, address, city, pincode, notes } = req.body;
+    console.log(fullName, phone, address, city, pincode, notes);
+    // Validation for required fields
+    if (!fullName || !phone || !address || !city || !pincode) {
+        return res.status(400).json({ error: 'All required fields must be filled.' });
+    }
+
+    try {
+        // Insert into the database
+        const query = `
+            INSERT INTO address (full_name, phone, address, city, pincode, notes)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *;
+        `;
+        const values = [fullName, phone, address, city, pincode, notes || null];
+
+        const result = await db.query(query, values);
+
+        // Success response
+        res.status(200).json({message:'posted successfully'})
+        // res.render('payment api')
+    } catch (error) {
+        console.error('Error inserting address:', error);
+        res.status(500).json({ error: 'An error occurred while submitting the address.' });
+    }
 });
 
 passport.serializeUser((user,cb)=>{

@@ -32,6 +32,7 @@ async function handlefunctionget(link){
                 showToast(error.response.data, 'error');
             }
         } else {
+            console.log(error)
             showToast('Unable to connect to the server', 'error');
         }
     } finally {
@@ -51,6 +52,7 @@ async function search(item) {
 
         const response = await axios.get(`http://localhost:3000/search?item=${encodeURIComponent(item)}`);
         const results = response.data;
+        console.log(results)
 
         searchResults.innerHTML = ''; // Clear loading indicator
 
@@ -69,7 +71,7 @@ async function search(item) {
     </div>
     <div class="overlay-icons">
         <span id="fullscreen" class="material-symbols-outlined" aria-label="Fullscreen" title="Fullscreen">open_in_full</span>
-        <a onclick="favoritetoggle(productId)">
+        <a onclick="favoritetoggle(${result.product_id})">
             <span
                 data-id="${result.product_id}" 
                 class="material-symbols-sharp favorite-icon" 

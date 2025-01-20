@@ -1,434 +1,489 @@
 body{
     width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+.display{
+    display: flex;
+    flex-direction: column;
+}
+.font{
+    font-family: 'poppins';
+}
+.container{
+    padding: 5px 10px;
+}
+.login{
+    padding: 10px;
+    height: 100vh;
+}
+.login div img{
+    margin-top: 30px;
+    width: 100px;
+    height: 50px;
+    object-fit: cover;
+}
+.login-container{
+    
+    width: 100%;
+    align-items: center;
+}
+h2{
+    font-size:x-large;
+}
+.login-form{
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: space-evenly;
+ gap: 20px;
+position: relative;
+
+}
+.input-field{
+    display: flex;
+    gap: 10px;
+    height: 30px;
+    border: none; /* Remove the outer border */
+    border-bottom: 1px solid #ddd; 
+    transition: border-color 0.5s ease;
+    position: relative;
+}
+.input-field input{
+    width: 250px;
+    height: 30px;
+    padding: 3px 10px;
+    color: grey;
+    font-weight: 500;
+    border: none; 
+    outline: none; 
+    font-size: 1rem; 
+}
+.input-field span{
+    border: none;
+} 
+ .input-field input:focus {
+    border-bottom: 2px solid #ababab; /* Highlight bottom border on focus */
+  } 
+  
+ .show-password-icon{
+    position: absolute;
+    right: 10px;
+    top: 5px;
+} 
+ .extra-options a{
+    font-size: 14px;
+}
+button{
+    width: 100%;
+    height: 40px;
+    border-radius: 12px;
+}
+ #loginname{
+    position: relative;
     margin: 0;
 }
+#command{
+    font-size: 14px;
+}
+#signupheader{
+    margin-top: 10px;
+}
+#loginheader{
+    margin-top: 50px;
+}
+
+/* main.ejs */
 .main{
-    display: flex;
-    flex-direction: column;
-    margin: 0 3%;
+    padding: 5px;
+    margin: 0;
 }
 .navbar{
-    margin-top: 20px;
     display: flex;
     justify-content: space-between;
-    height: 8vh;
-    align-items: center;
-    margin-bottom: 22px;
+    height: 30px;
+    width: 100%;
 }
-
-.pagedetails,.storedetails>ul,.pagefeature{
+.pagedetails,.pagefeature{
     display: flex;
+}
+.pagefeature{
+    gap: 10px;
 }
 .pagedetails img{
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-}
-.pagedetails{
-    align-items: center;
-}
-.pagedetails h1{
-    font-size:x-large;
-    font-family: "DM Serif Display", serif;
-  font-weight: 900;
-  font-style: italic;
-}
-.storedetails{
-    width: 60%;
-}
-.storedetails>ul{
-    list-style-type: none;
-    font-family: "Poppins", serif;
-    font-weight: 600;
-    font-style: normal;
-    justify-content: space-evenly;
-    gap: 30px;
-}
-
-.pagefeature{
-    justify-content: space-evenly;
-    gap: 30px;
-}
-.pagefeature form{
-    display: flex;
-    align-items: center;
-}
-.pagefeature form>input,.pagefeature form>button{
-    border: none;
-    height: 30px;
-}
-.pagefeature form>input{
-    border-radius: 10px;
-}
-.pagefeature form>button{
-    background-color: transparent;
-}
-.pagefeature>i{
-    font-size: xx-large;
-}
-
-.introduction{
-    display: grid;
-    gap: 20px;
-    width: 100%;
-    height: 80vh;
-    grid-template:1fr 1fr/1fr 1fr;
-}
-.big,.small{
-    border-radius: 3px;
-    font-family: "Poppins", serif;
-    display: flex;
-}
-.big{
-    background-color: #f5f5f5;
-    grid-row: span 2;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    overflow: hidden;
-    
-}
-.big h2,.small h2{
-    margin:5% 0 1% 0 ;
-    font-size: 30px;
-    font-weight: 500;
-    color:#feab47;
-}
-
-.big h1,.small h1{
-    margin:2% 0 3% 0 ;
-    font-size: 45px;
-    font-family: 'Times New Roman', Times, serif;
-    font-weight: 900;
-}
-.big button,.small button{
     width: 150px;
-    padding:15px;
-    color: #516b72;
-    text-transform: uppercase;
-    font-size: 15px;
-    font-weight: 700;
-    border: 3px solid #516b72;
-    margin-bottom: 30px;
-    letter-spacing: 1px;
-    
 }
-.big p,.small p{
-    font-size: 16px;
-    color: #8a8a8a;
-}
-.big img{
-    width: 100%;
-    height: 55%;
-    object-fit: cover;
-
-}
-.big p{
-    padding: 0 32%;
-    text-align: center;
-}
-.small{
-    padding-left: 20px;
-}
-.upper{
-    background-color: #f5f5f5;
-}
-.lower{
-    background-color: #ffa12e;
-}
-.small P{
-    margin: 5px 0 16px 0;
-}
-.lower h2{
-    color: rgb(24, 23, 23);
-}
-.lower button{
-    background-color: #ffa12e;
-}
-.disply{
+#list ul{
+    background-color: whitesmoke;
     display: flex;
     flex-direction: column;
+    align-items: start;
+    padding:0 10px;
+    list-style: none;
+    width: 25%;
+    /* background-color:red; */
+    position: absolute;
+    left: 5px;
+    top:30px;
+    border-radius:0 5px 5px 0;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
-.information{
-    justify-content: space-evenly;
-    margin-left: 20px;
-    flex: 1.5;
+#list ul a{
+    border-bottom: 1px solid black;
+    width: 100%;
+    padding: 5px;
+    font-size: 14px;
+    margin-bottom: 1px solid black;
+    text-decoration: none;
+    cursor: pointer;
 }
-.photo{
-    display: flex;
-    flex: 1;
+#search{
+    position: absolute;
+    width: 35%;
+    height: 20px;
+    right: 10px;
+    top:30px;
+    border-radius: 5px;
 }
+#box{
+    background-color:whitesmoke;
+    position: absolute;
+    right: 10px;
+    top:30px;
+    border-radius: 5px;
+    padding: 10px;
+    font-family: 'Poppins';
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+#box *{
+    color: gray;
+    margin: 0px;
+    padding: 4px;
+    font-size: 14px;
 
-.photo img{
-    width: 100%;
-    object-fit: fill;
-  
 }
-.categories{
-    align-items: center;
-    width: 100%;
-}
-.feature{
+#box div{
     display: flex;
     justify-content: space-between;
-    gap: 10px;
-    flex: 1;
-    margin:40px 0;
-    background-color: #8a8a8a;
-    width: 100%;
+    /* align-items: center; */
 }
-.feature>img{
-    width: 300px;
-    height: 100px;
-    object-fit:fill;
+#closebtn{
+    cursor: pointer;
+    font-size: 20px;
 }
-.categories,.newcollection{
-    margin-top: 10px;
+.mousepointer{
+    cursor: pointer;
+}
+#home{
     display: flex;
+    height: 35vh;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+.information{
+    display: flex;
+    flex: 2;
     flex-direction: column;
+    justify-content: space-evenly;
+    align-items: flex-start;
 }
-.categories{
-    background-color:#f5f5f5;
-    height: 95vh;
+.information h2,.title h2{
+    font-size: x-large;
+    margin-bottom: 0;
+    font-family: 'poppins';
 }
-.categories>div{
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.information h1,.title h1{
+    margin-bottom: 0;
+    font-size: x-large;
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden; /* Hide any overflowing text */
+    text-overflow: ellipsis; 
+}
+.photo{
+    display: 1;
+}
+.photo img{
     width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
-.categories>div>div{
+.information p{
+    font-family: 'poppins';
+    font-size: small;
+}
+.information button{
+    width: 40%;
+    position: relative;
+    left: 25%;
+    
+}
+
+.feature{
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: space-evenly;
+    height: 5%;
+    margin-top:10px ;
 }
-.title>h2{
-    margin: 30px 0 5px 0;
-    font-family: "Poppins", serif;
-    font-size: 22px;
-    font-weight: bold;
+.feature img{
+    width: 20%;
+    object-fit: cover;
 }
-.title>h1{
-    margin-top: 5px;
-    font-size:27px;
-    font-family: "DM Serif Display", serif;
-}
-.font-color{
-    color:#ffa12e ;
-}
-.categories>div>div>h3{
-    font-family: "Poppins", serif;
-    font-size: 17px;
-}
-.categories>div>div>img{
-    height: 250px;
-    width: 85%;
-}
-.categories>div>img{
+#sections{
     display: flex;
-    width: 100%;
-    align-items: center;
-    height: 40vh;
-    object-fit: fill;
-}
-.newcollection{
-    background-color: white;
+    flex-direction: column ;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    padding: 0 0 10px 0;
+
 }
 .title{
     display: flex;
     flex-direction: column;
-    margin: 30px 0 15px 0;
     align-items: center;
+    width: 100%;
+}
+#items{
+    display: flex;
+    justify-content: space-evenly;
+    gap: 10px;
+    width: 100%;
+
+}
+#items div{
+    margin-top: 10px;
+    min-width: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#items div img{
+    width: 100%;
+}
+#items div h3{
+    font-family: 'poppins';
+    margin: 0;
+    font-size: 90%;
+}
+#shop{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    
 }
 .store{
-    padding: 0 1.5%;
-    width: 96%;
     display: grid;
-    grid-template:auto/1fr 1fr 1fr 1fr;
-    grid-auto-rows: auto;
-    gap: 15px;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
 }
 .product{
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-    border-radius: 5px;
+   min-height:35vh;
+    padding:5px;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    border-radius: 7px;
 }
-.image-setup{
-    position: relative;
-}
-.image-setup img{
-    width: 100%;
-    height: 35%;
-    object-fit: fill;
+.image-setup div img{
+    border-radius: 7px;
+   min-width: 100%;
+   height: 22vh;
+   object-fit:fill;
 }
 .overlay-icons{
-    gap:5px;
-    background-color:transparent;
-    z-index: 1;
-    position: absolute;
-    top: 15px;
-    right: 5px;
-}
-.overlay-icons span{
-    visibility: hidden;
+    margin-top: 10px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color:rgba(255, 255, 255, .7);
-    border-radius: 50%;
-    font-weight: 300px;
-    width: 40px;
-    height: 40px;
-    padding: 2px;
-}
-.overlay-icons:hover span{
-    visibility: visible;
+    justify-content:flex-start;
+    gap: 10px;
 }
 .info{
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-    font-family: "Faculty Glyphic", sans-serif;
-    padding-left: 5px;
+    margin-top: 10px;
 }
-.info span{
-    margin: 0;
-    letter-spacing: 1px;
+.info *{
+    font-size: small;
+    word-break:break-word ;
+    white-space: wrap; /* Prevent text from wrapping */
+    overflow: hidden;
 }
-.Product-category{
-    font-family: 'Poppins';
-    color: #000;
-    font-weight: bolder;
-    font-size: 14px;
-}
-.Product-name{
-    font-size: 17px;
-    font-weight: bolder;
+#about{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .qa{
-    padding: 10px 40px;
-    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    padding: 5px;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
-.qa>div>div{
+.qa div{
+    padding: 10px 0 5px 0;
+    width: 100%;
     display: flex;
     justify-content: space-between;
+    font-size: small;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+}
+.answer{
+    background-color:gray;
+    font-size: small;
+    width: 100%; 
+}
+
+#cartlist{
+   padding: 10px;
+}
+.headder{
+    margin-bottom:20px ;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
     align-items: center;
-    background-color: #516b72;
     height: 40px;
 }
-
-.qa>div>span,.qa>div>div{
-    padding: 0 20px;
-    font-size: larger;
-    font-family: 'Poppins';
-
+#logo{
+    width: 150px;
+    height: 30px;
 }
-.qa>div>span{
-    text-align: justify;
-    background-color: rgb(245, 242, 242);
-}
-/* animation */
-.storedetails>ul>li:hover,.pagefeature>i:hover{
-    color:#8a8a8a;
-    font-weight: 800px;
-    cursor: pointer;
-}
-.storedetails>ul>li:active{
-    font-weight: 800px;
-}
-/* signup page */
-.login {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to right, #feab47, #f5f5f5);
+#cartitems{
+    width: 100%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+}
+#cartitems div{
+    display: flex;
+}
+#cartitems div div img{
+    height: 24vh;
+    width: 100%;
+    border-radius: 7px;
+    padding-right: 10px;
+}
+.cartlistinfo span:nth-child(1) {
+    font-size: 18px; /* Slightly larger for the product name */
+    font-weight: bold; /* Bold to highlight importance */
+    color: #333; /* Darker text for emphasis */
+}
+
+.cartlistinfo span:nth-child(2) {
+    font-size: 14px; /* Slightly smaller for description */
+    font-weight: normal; /* Standard weight */
+    color: #666; /* Gray color for a softer look */
+}
+
+.cartlistinfo span:nth-child(3) {
+    font-size: 16px; /* Medium size for price */
+    font-weight: 600; /* Semi-bold for emphasis */
+    color: #007bff; /* Blue color for a pop */
+}
+.cartlistinfo {
+    display: flex;
+    flex-direction: column; /* Stacks the items vertically */
+    gap: 8px; /* Adds spacing between each line */
+    padding: 12px; /* Adds padding inside the container */
+    background-color: #f9f9f9; /* Light background for contrast */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a soft shadow */
+    max-width: 300px; /* Optional: Restricts the width */
+    font-family: Arial, sans-serif; /* Clean, modern font */
+}
+
+.cartlistinfo span {
+    display: block; /* Ensures each span is on a new line */
+}
+
+/* Styling the container div for better alignment */
+.actionbutton {
+    display: flex; /* Aligns the buttons horizontally */
+    gap: 12px; /* Adds space between the buttons */
+    justify-content: flex-start; /* Aligns buttons to the left (or center/right if desired) */
+    margin: 10px 0 16px 0; /* Adds spacing from elements above */
+}
+
+/* General link styles */
+.actionbutton a {
+    text-decoration: none; /* Removes default underline */
+    font-family: Arial, sans-serif; /* Clean font style */
+    padding: 10px 16px; /* Adds button-like spacing */
+    border-radius: 6px; /* Smooth rounded edges */
+    font-size: 14px; /* Readable font size */
+    font-weight: bold; /* Makes text more prominent */
+    display: inline-block; /* Ensures proper padding and appearance */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth hover effects */
+}
+
+/* Style for "Remove from Cart" */
+.actionbutton a[href*="cartremove"] {
+    background-color: #ff4d4d; /* Light red background */
+    color: white; /* White text for contrast */
+    border: 1px solid #cc0000; /* Slightly darker red border */
+}
+
+.actionbutton a[href*="cartremove"]:hover {
+    background-color: #cc0000; /* Darker red on hover */
+    color: #fff; /* Ensures white text remains */
+}
+
+/* Style for "Buy Now" */
+.actionbutton a[href*="buy"] {
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text for contrast */
+    border: 1px solid #0056b3; /* Slightly darker blue border */
+}
+
+.actionbutton a[href*="buy"]:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    color: #fff; /* Ensures white text remains */
+}
+
+.cartstatus{
+    width: 100%;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+}
+.address{
+    padding:10px;
+    display: flex;
+    flex-direction: column;
+}
+#orderForm{
+    display: flex;
+    flex-direction: column;
     height: 100vh;
-    color: #333333;
+    gap: 15px;
 }
-
-.login-container {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    padding: 2.5rem;
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
+.address form div{
+    display: flex;
+    flex-direction: column;
 }
-
-.login-container h1 {
-    margin-bottom: 1.5rem;
-    font-size: 2rem;
-    font-weight: 600;
-    color: #feab47;
+.address form div label{
+    font-family: 'poppins';
+    font-size: 15px;
 }
-
-.login-container input[type="text"],
-.login-container input[type="password"],
-.login-container input[type="email"] {
-    width: 100%;
-    padding: 0.8rem;
-    margin-bottom: 1rem;
+.address form div input{
+    font-family: 'poppins';
+    height: 30px;
+    color: gray;
     border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    background: rgba(255, 255, 255, 0.6);
-    color: #333333;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
 }
-
-.login-container input[type="text"]::placeholder,
-.login-container input[type="password"]::placeholder,
-.login-container input[type="email"]::placeholder {
-    color: #999999;
-}
-.login-container button {
-    width: 100%;
-    padding: 0.8rem;
-    margin-bottom: 1rem;
-    background: linear-gradient(to right, #feab47, #f5f5f5);
+.address form div textarea{
+    font-family: 'poppins';
+    height: 70px;
     border: none;
-    border-radius: 8px;
-    color: #333333;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s ease;
+    color: gray;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+
 }
 
-.login-container button:hover {
-    background: linear-gradient(to right, #f5f5f5, #feab47);
-}
 
-.login-container .google-button {
-    background: #db4437;
-    font-weight: bold;
-    color: #ffffff;
-}
 
-.login-container .google-button:hover {
-    background: #c33c2e;
-}
 
-.login-container p {
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    color: #666666;
-}
 
-.login-container p a {
-    color: #feab47;
-    text-decoration: underline;
-}
-
-.login-container p a:hover {
-    text-decoration: none;
-}
-
-.hidden{
-    display: none;
-}
 
 
 /* Spinner styles */
@@ -504,4 +559,25 @@ body{
 
 .favorite-icon.favorited {
     color: red; /* Color when the product is favorited */
+}
+
+.hidden{
+    display: none;
+}
+
+@media (min-width: 490px) {
+    .store {
+        grid-template-columns: repeat(3, 1fr); /* Change to 4 columns */
+    }
+}
+
+@media (min-width: 690px) {
+    .store {
+        grid-template-columns: repeat(4, 1fr); /* Change to 4 columns */
+    }
+}
+@media (min-width: 1020px) {
+    .store {
+        grid-template-columns: repeat(5, 1fr); /* Change to 4 columns */
+    }
 }

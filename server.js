@@ -9,12 +9,13 @@ import pgSession from 'connect-pg-simple';
 import bcrypt from "bcrypt";
 import multer from 'multer';
 import fs from 'fs';
+import cors from 'cors'
 import axios from 'axios';
 
 //port and express declaration
-const port=3000;
+const port=3000 || 3001;
 const app=express();
-
+app.use(cors());
 const saltRounds=10;
 env.config()
 const db= new pg.Client({
@@ -600,7 +601,7 @@ app.post('/submitaddress', async (req, res) => {
     if (!fullName || !phone || !address || !city || !pincode) {
         return res.status(400).json({ error: 'All required fields must be filled.' });
     }
-
+    
     try {
         // Insert into the database
         const query = `
@@ -627,4 +628,4 @@ passport.serializeUser((user,cb)=>{
 passport.deserializeUser((user,cb)=>{
     cb(null,user)
 })
-app.listen(port,()=>console.log(`listening to ${port}`))
+app.listen(port,'0.0.0.0',()=>console.log(`listening to ${port}`))

@@ -5,29 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    <div class="login">
-    <div class="login-container">
-        <h1>Sign Up</h1>
-        <form  id="myForm" action="/signup" method="post">
-            <input type="text" placeholder="Username" name="username" required>
-            <input type="email" placeholder="Email" name="email" required>
-            <input id="password" type="password" placeholder="Password" name="password" required minlength="6">
-            <input id="confirmpassword" type="password" placeholder="Confirm Password" name="confirmpassword" required>
-            <p id="errormessage" style="color: red; "><%=locals.error %></p>
-            <button type="submit">Sign Up</button>
-            <button type="button" class="google-button">Sign Up with Google</button>
-        </form>
-        <p>Already have an account? <a href="/login">Login</a></p>
-    </div>
-</div>
+    <div class="login display font">
+        <div>
+            <img src="/asset/logo.jpg" alt="">
+        </div>
+        <div id="signupheader" class="login-container display">
+          <h2 >Sign Up</h2>
+          <form id="signup-form" action="/signup" method="post" class="login-form">
+            <!-- Username Field -->
+            <div class="input-field">
+              <span class="material-icons">person</span>
+              <input id="username" type="text" placeholder="Username" name="username" required>
+            </div>
+            <!-- Email Field -->
+            <div class="input-field">
+              <span class="material-icons">email</span>
+              <input id="email" type="email" placeholder="Email" name="email" required>
+            </div>
+            <!-- Password Field -->
+            <div class="input-field">
+              <span class="material-icons">lock</span>
+              <input id="password" type="password" placeholder="Password" name="password" required minlength="6">
+              <span class="show-password-icon" onclick="togglePassword('password')">👁️</span>
+            </div>
+            <!-- Confirm Password Field -->
+            <div class="input-field">
+              <span class="material-icons">lock</span>
+              <input id="confirm-password" type="password" placeholder="Confirm Password" name="confirmpassword" required>
+              <span class="show-password-icon" onclick="togglePassword('confirm-password')">👁️</span>
+            </div>
+            <!-- Error Message -->
+            <p style="font-size: 14px;" id="error"><%= locals.error %></p>
+            <!-- Submit Button -->
+            <button type="submit" class="login-button">Sign Up</button>
+            <p id="loginname">Or</p>
+            <!-- Social Login -->
+            
+              <button type="button" class="google-login">Google</button>
+            <!-- Already Have an Account -->
+            <p id="command">Already have an account? <a href="/login">Login</a></p>
+          </form>
+        </div>
+      </div>
 <script>
 
     const password=document.getElementById('password');
-    const confirmpassword=document.getElementById('confirmpassword');
-    const errormessage=document.getElementById('errormessage');
+    const confirmpassword=document.getElementById('confirm-password');
+    const errormessage=document.getElementById('error');
     const buttongoogle=document.querySelector('.google-button');
 
 
@@ -35,12 +63,18 @@
         if(password.value === confirmpassword.value){
             errormessage.textContent='Password match';
             errormessage.style.color='green';
+            
         }else{
             event.preventDefault();
             errormessage.textContent='Password mismatch! try again';
+            errormessage.style.color='red';
         }
     })
-  
+    function togglePassword(fieldId) {
+      const passwordField = document.getElementById(fieldId);
+      const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordField.setAttribute('type', type);
+    }
 
 </script>
 </body>

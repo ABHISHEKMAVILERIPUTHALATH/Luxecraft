@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>show address</h1>
+    <h1>Address Confirmation</h1>
+    <p>Thank you for submitting your address!</p>
+    <ul>
+        <li><strong>Full Name:</strong> <%= address.full_name %></li>
+        <li><strong>Phone:</strong> <%= address.phone %></li>
+        <li><strong>Address:</strong> <%= address.address %></li>
+        <li><strong>City:</strong> <%= address.city %></li>
+        <li><strong>Pincode:</strong> <%= address.pincode %></li>
+        <li><strong>Notes:</strong> <%= address.notes || 'No notes provided' %></li>
+    </ul>
+    <p>for order confirmation</p>
+    <input id="amount" type="number" name="amount" placeholder="number of quantity" min="1" step="1" oninput="display()">
+    <p id="value"></p>
+    <button type="button" onclick="payNow()">Pay Now</button>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  function display(){
+    const quantity = document.getElementById('amount').value;
+      const amount=quantity*<%=amount%>
+    document.getElementById('value').innerHTML=`${amount}`;
+  }
+  async function payNow() {
+      const quantity = document.getElementById('amount').value;
+      const amount=quantity*<%=amount%>
+      
+      console.log(amount);
+      // Create order by calling the server endpoint
+      const response = await fetch('/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ amount, currency: 'INR', receipt: 'receipt#1', notes: {} })
+      });
+
+      const order = await response.json();
+
+      // Open Razorpay Checkout
+      const options = {
+        key: 'rzp_test_feXYMp721pTC9T', // Replace with your Razorpay key_id
+        amount: order.amount,
+        currency: order.currency,
+        name: 'Luxe craft',
+        description: 'Test Transaction',
+        order_id: order.id, // This is the order_id created in the backend
+        callback_url: `http://localhost:3000/payment-success/<%=address.id%>`, // Your success URL
+        prefill: {
+          name: 'Your Name',
+          email: 'your.email@example.com',
+          contact: '9999999999'
+        },
+        theme: { 
+          color: '#F37254'
+        },
+        handler: function (response) {
+          console.log(response);
+          fetch('/verify-payment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature
+            })
+          }).then(res => res.json())
+            .then(data => {
+              if (data.status === 'ok') {
+                window.location.href = '/payment-success/<%=address.id%>';
+              } else {
+                alert('Payment verification failed');
+              }
+            }).catch(error => {
+              console.error('Error:', error);
+              alert('Error verifying payment');
+            });
+        }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+    }
+  </script>
+
+</body>
+</html>

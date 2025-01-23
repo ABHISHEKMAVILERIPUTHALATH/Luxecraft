@@ -10,7 +10,10 @@ import bcrypt from "bcrypt";
 import multer from 'multer';
 import fs from 'fs';
 import cors from 'cors'
+import Razorpay from 'razorpay';
+import { validateWebhookSignature } from 'razorpay/dist/utils/razorpay-utils.js';
 import axios from 'axios';
+import { render } from 'ejs';
 
 //port and express declaration
 const port=3000 || 3001;
@@ -29,11 +32,6 @@ const db= new pg.Client({
 
 db.connect();
 
-//image path added
-const newpath="./public/images/";
-if (!fs.existsSync(newpath)) {
-    fs.mkdirSync(newpath, { recursive: true });
-}
 
 const pgStore = pgSession(session);  
 const sessionStore = new pgStore({
@@ -44,6 +42,7 @@ const sessionStore = new pgStore({
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended:true}))
+app.use(express.json());
 
 app.use(session(
     {
@@ -70,8 +69,108 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.get('/',async(req,res)=>{
+const razorpay = new Razorpay({
+    key_id: process.env.RAZORKEY_ID,
+    key_secret: process.env.RAZORKEY_SECRECT,
+  });
 
+  const readData = () => {
+    if (fs.existsSync('orders.json')) {
+      const data = fs.readFileSync('orders.json');
+      return JSON.parse(data);
+    }
+    return [];
+   };
+
+   const writeData = (data) => {
+    fs.writeFileSync('orders.json', JSON.stringify(data, null, 2));
+   };
+
+   if (!fs.existsSync('orders.json')) {
+    writeData([]);
+   }
+
+   app.post('/create-order', async (req, res) => {
+    try {
+      const { amount, currency, receipt, notes } = req.body;
+  
+      const options = {
+        amount: amount * 100, // Convert amount to paise
+        currency,
+        receipt,
+        notes,
+      };
+      
+      const order = await razorpay.orders.create(options);
+      const value=db.query('')
+      // Read current orders, add new order, and write back to the file
+      const orders = readData();
+      orders.push({
+        order_id: order.id,
+        amount: order.amount,
+        currency: order.currency,
+        receipt: order.receipt,
+        status: 'created',
+      });
+      writeData(orders);
+      console.log(orders);
+      
+  
+      res.json(order); // Send order details to frontend, including order ID
+    } catch (error) {
+      console.error(error);
+      res.status(500).json('Error creating order');
+    }
+  });
+
+  app.get('/payment-success/:addressid', async(req, res) => {
+    const addressid=req.params.addressid;
+    await db.query("UPDATE address SET payment_status = 'completed' WHERE id = $1;",[addressid])
+    
+    // res.render('order.ejs')
+  });
+
+
+  app.post('/verify-payment', (req, res) => {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+  
+    const secret = razorpay.key_secret;
+    const body = razorpay_order_id + '|' + razorpay_payment_id;
+  
+    try {
+      const isValidSignature = validateWebhookSignature(body, razorpay_signature, secret);
+      if (isValidSignature) {
+        // Update the order with payment details
+        const orders = readData();
+        const order = orders.find(o => o.order_id === razorpay_order_id);
+        if (order) {
+          order.status = 'paid';
+          order.payment_id = razorpay_payment_id;
+          writeData(orders);
+        }
+        res.status(200).json({ status: 'ok' });
+        console.log("Payment verification successful");
+      } else {
+        res.status(400).json({ status: 'verification_failed' });
+        console.log("Payment verification failed");
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: 'error', message: 'Error verifying payment' });
+    }
+  });
+//image path added
+const newpath="./public/images/";
+if (!fs.existsSync(newpath)) {
+    fs.mkdirSync(newpath, { recursive: true });
+}
+
+app.get('/addressconfirm',(req,res)=>{
+    res.render('addressconfirm.ejs');
+})
+
+app.get('/',async(req,res)=>{
+    
     console.log('connection established');
     const category=await db.query('SELECT DISTINCT ON (c.item) p.id AS product_id, p.productname, p.price, p.description, p.img, c.item AS itemname FROM product p JOIN category c ON p.id = c.productid ORDER BY c.item, p.id;')
     if (req.isAuthenticated()){
@@ -257,6 +356,10 @@ app.get('/adminpost',(req,res)=>{
     res.render('adminpost.ejs',{
         action:'Submit'
     })
+})
+app.get("/removeunwanted",async(req,res)=>{
+    const deleteteunwanted=await db.query('DELETE FROM  address WHERE payment_status=$1',['pending']);
+    res.render('admin.ejs');
 })
 
 
@@ -497,10 +600,9 @@ app.get('/cartlist', async (req, res) => {
     if (req.isAuthenticated()) {
         try {
             const userId = req.user.id; // Get the authenticated user's ID
-            
             // Fetch cart data along with product details
             const response = await db.query(
-                `SELECT c.id AS cart_id,p.id, p.productname, p.price, p.description, p.img, c.quantity, c.created
+                `SELECT c.id AS cart_id,p.id AS productid, p.productname, p.price, p.description, p.img, c.quantity, c.created
                  FROM cart c
                  INNER JOIN product p ON c.productid = p.id
                  WHERE c.userid = $1`,
@@ -508,8 +610,6 @@ app.get('/cartlist', async (req, res) => {
             );
 
             const cartData = response.rows;
-            console.log(`Cart items: ${cartData.length}`);
-            console.log(cartData);
             // Render the cart list page and pass the cart data
             res.render('cartlist.ejs', { cartdata: cartData });
         } catch (error) {
@@ -530,7 +630,6 @@ app.get('/cartremove/:id', async (req, res) => {
     try {
         // Check if the cart item exists for the user
         const response = await db.query('SELECT * FROM cart WHERE id = $1 AND userid = $2', [cartId, userId]);
-        console.log(response.rows);
         
         console.log(`Cart ID: ${cartId}, User ID: ${userId}`);
         if (response.rows.length > 0) {
@@ -589,38 +688,88 @@ app.get('/toggle/:productid', async (req, res) => {
     
 });
 
-app.get('/buy/:cartid',(req,res)=>{
-    res.render('address.ejs')
+app.get('/buy/:productid',(req,res)=>{
+    if(req.isAuthenticated()){
+        res.render('address.ejs',{id:req.params.productid})
+    }
 })
 
 
-app.post('/submitaddress', async (req, res) => {
-    const { fullName, phone, address, city, pincode, notes } = req.body;
-    console.log(fullName, phone, address, city, pincode, notes);
-    // Validation for required fields
-    if (!fullName || !phone || !address || !city || !pincode) {
-        return res.status(400).json({ error: 'All required fields must be filled.' });
+app.post('/submitaddress/:productid', async (req, res) => {
+    if(req.isAuthenticated()){
+        const userid=req.user.id
+
+        const { fullName, phone, address, city, pincode, notes } = req.body;
+    const productid=req.params.productid;
+
+        console.log(fullName, phone, address, city, pincode, notes);
+        if (!fullName || !phone || !address || !city || !pincode) {
+            return res.status(400).json({ error: 'All required fields must be filled.' });
+        }
+        
+        try {
+            const productQuery = `
+            SELECT price 
+            FROM product 
+            WHERE id = $1;
+        `;
+        const productResult = await db.query(productQuery, [productid]);
+        
+        if (productResult.rows.length === 0) {
+            return res.status(404).json({ error: 'No product found for this cart.' });
+        }
+
+        const productAmount = productResult.rows[0].price;
+        console.log(productAmount);
+        
+            // Insert into the database
+            const query = `
+                INSERT INTO address (full_name, phone, address, city, pincode, notes,product_id,payment_status,userid)
+                VALUES ($1, $2, $3, $4, $5, $6,$7,$8,$9)
+                RETURNING *;
+            `;
+            const values = [fullName, phone, address, city, pincode, notes || null,productid,'pending',userid];
+    
+            const result = await db.query(query, values);
+            // Success response
+            res.render('addressconfirm.ejs',{address:result.rows[0],amount:productAmount});
+            // res.render('payment api')
+        } catch (error) {
+            console.error('Error inserting address:', error);
+            res.status(500).json({ error: 'An error occurred while submitting the address.' });
+        }
+
     }
     
-    try {
-        // Insert into the database
-        const query = `
-            INSERT INTO address (full_name, phone, address, city, pincode, notes)
-            VALUES ($1, $2, $3, $4, $5, $6)
-            RETURNING *;
-        `;
-        const values = [fullName, phone, address, city, pincode, notes || null];
-
-        const result = await db.query(query, values);
-
-        // Success response
-        res.status(200).json({message:'posted successfully'})
-        // res.render('payment api')
-    } catch (error) {
-        console.error('Error inserting address:', error);
-        res.status(500).json({ error: 'An error occurred while submitting the address.' });
+    });
+app.get('/orders',async(req,res)=>{
+    if(req.isAuthenticated()){
+        const userid=req.user.id
+        console.log(userid);
+        
+        
+        const response=await db.query('SELECT * FROM product p LEFT JOIN address a ON p.id = a.product_id WHERE a.userid = $1;',[userid])
+        console.log(response.rows)
+        res.render('order.ejs',{orders:response.rows})
     }
-});
+   
+})
+app.get('/orderlist',async(req,res)=>{
+    if(req.isAuthenticated() &&req.user.role =='admin'){
+        const addresslist=await db.query('SELECT * FROM address WHERE payment_status=$1',['completed'])
+    console.log(addresslist.rows)
+    res.render('orderlist.ejs',{addresslists:addresslist.rows});
+    }
+    
+})
+
+
+app.get('/shippedtag/:addressid',async(req,res)=>{
+    const addressid= req.params.addressid;
+    await db.query('UPDATE  address SET order_status=$1 WHERE id=$2',['shipped',addressid])
+    res.render('orderlist.ejs');
+})
+
 
 passport.serializeUser((user,cb)=>{
     cb(null,user)

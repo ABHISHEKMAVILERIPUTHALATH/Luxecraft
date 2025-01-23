@@ -10,11 +10,11 @@
     <div id="cartlist">
         <div class="headder">
             <img id="logo" src="/asset/logo.jpg" alt="">
-            <h2>your cart</h2>
+            <h2>your orders</h2>
         </div>
         <div id="cartitems">
-            <% if(locals.cartdata.length != 0){ %>
-                <% cartdata.forEach(item=>{%>
+            <% if(locals.orders.length != 0){ %>
+                <% orders.forEach(item=>{%>
             <div>
                     <div>
                         <img src="<%= item.img %>" alt="">
@@ -23,15 +23,12 @@
                         <span><%= item.productname %></span>
                         <span><%= item.description %></span>
                         <span>$<%= item.price %></span>
+                        <span><%= item.order_status %></span>
                     </div>
-            </div>
-            <div class="actionbutton">
-                <a href="/cartremove/<%= item.cart_id %>">remove from cart</a>
-                <a href="/buy/<%= item.productid %>">buynow</a>
             </div>
               <%  }) %>
                 <%  }else{%>
-                    <h1 class="cartstatus"> oopppsss !!!!!your cart is empty</h1>
+                    <h1 class="cartstatus"> No orders placed</h1>
               <%  } %>
         </div>
         

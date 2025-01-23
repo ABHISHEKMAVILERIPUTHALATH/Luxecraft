@@ -480,6 +480,22 @@ button{
 
 }
 
+.adminpage{
+    display: flex;
+    flex-direction: column;
+}
+.adminnav{
+    display: flex;
+    justify-content: space-between;
+    height: 10vh;
+    align-items:center;
+}
+.adminaction{
+    display: flex;
+    gap: 10px;
+    justify-content: space-evenly;
+}
+
 
 
 
@@ -487,18 +503,20 @@ button{
 
 
 /* Spinner styles */
+/* Spinner Styles */
 .spinner {
     display: none;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #3498db;
+    border: 3px 3olid rgba(0, 0, 0, 0.1); /* Gray border with transparency */
+    border-top: 4px solid #555; /* Darker gray for the spinning effect */
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 60px; /* Increased size */
+    height: 60px; /* Increased size */
     animation: spin 1s linear infinite;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 9999; /* Ensure it stays on top */
 }
 
 /* Animation for the spinner */
@@ -506,6 +524,14 @@ button{
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* .blurred-background {
+    filter: blur(3px); 
+    pointer-events: none; 
+    user-select: none; 
+    opacity: 0.95; 
+} */
+
 
 .toast {
     visibility: hidden; /* Initially hidden */
@@ -563,6 +589,7 @@ button{
 
 .hidden{
     display: none;
+    color:'#F37254';
 }
 
 @media (min-width: 490px) {

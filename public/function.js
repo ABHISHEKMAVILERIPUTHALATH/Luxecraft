@@ -48,7 +48,7 @@ async function search(item) {
         const shopElement=document.querySelector('#shop')
         shopElement.scrollIntoView({ behavior: 'smooth' });
         const searchResults = document.getElementById('product');
-        searchResults.innerHTML = '<p>Loading...</p>'; // Show loading indicator
+        showSpinner()// Show loading indicator
 
         const response = await axios.get(`http://localhost:3000/search?item=${encodeURIComponent(item)}`);
         const results = response.data;
@@ -95,6 +95,8 @@ async function search(item) {
     } catch (error) {
         console.error('Error fetching search results:', error);
         document.getElementById('search-results').innerHTML = '<p>Error loading results. Please try again later.</p>';
+    }finally{
+        hideSpinner()
     }
 }
 
@@ -135,8 +137,7 @@ function showToast(message, type) {
 //favorite button partial loading
 async function favoritetoggle(id){
     try {
-        const loader = document.getElementById("loader");
-    loader.style.display = 'block';
+        showSpinner();
         // Make the API request to toggle favorite status
         const response = await axios.get(`http://localhost:3000/toggle/${id}`);
         const favoriteIcon = document.querySelector(`[data-id="${id}"]`);
@@ -153,6 +154,16 @@ async function favoritetoggle(id){
         console.error('Error toggling favorite:', error);
         showToast(error.response.data,'error')
     } finally{
-        loader.style.display='none'
+        hideSpinner();
     }
+}
+
+function showSpinner() {
+    document.querySelector('.spinner').style.display = 'block';
+    document.body.classList.add('blurred-background');
+}
+
+function hideSpinner() {
+    document.querySelector('.spinner').style.display = 'none';
+    document.body.classList.remove('blurred-background');
 }

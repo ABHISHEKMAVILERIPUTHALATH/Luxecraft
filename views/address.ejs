@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="address">
-        <form id="orderForm" action="/submitaddress" method="POST">
+        <form id="orderForm" action="/submitaddress/<%=id %>" method="POST">
             <h2 style="font-family: 'poppins';">Delivery Details</h2>
             
             <div>
@@ -41,8 +41,9 @@
                 <textarea id="notes" name="notes" placeholder="Enter any special delivery instructions or notes"></textarea>
             </div>
         
-            <button type="submit">Continue</button>
+            <button type="submit"> continue</button>
         </form>
+
     </div>
     
     

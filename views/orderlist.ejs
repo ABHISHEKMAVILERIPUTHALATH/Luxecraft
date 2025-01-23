@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <% if (locals.addresslists.length != 0) { %>
+        <h1>orders placed</h1>
+        <% addresslists.forEach(addresslist => { %>
+            <% if (addresslist.order_status === 'order placed') { %>
+                <ul>
+                    <li><strong>Full Name:</strong> <%= addresslist.full_name %></li>
+                    <li><strong>Phone:</strong> <%= addresslist.phone %></li>
+                    <li><strong>Address:</strong> <%= addresslist.address %></li>
+                    <li><strong>City:</strong> <%= addresslist.city %></li>
+                    <li><strong>Pincode:</strong> <%= addresslist.pincode %></li>
+                    <li><strong>Notes:</strong> <%= addresslist.notes || 'No notes provided' %></li>
+                </ul>
+                <a href="/shippedtag/<%= addresslist.id %>"> ready to shipped</a>
+            <% }else{%>
+                <p>no new orders</p>
+           <% } %>
+            <% }) %>
+        <h1>shipped orders</h1>
+            <% addresslists.forEach(addresslist => { %>
+                <% if (addresslist.order_status === 'shipped') { %>
+                    <ul>
+                        <li><strong>Full Name:</strong> <%= addresslist.full_name %></li>
+                        <li><strong>Phone:</strong> <%= addresslist.phone %></li>
+                        <li><strong>Address:</strong> <%= addresslist.address %></li>
+                        <li><strong>City:</strong> <%= addresslist.city %></li>
+                        <li><strong>Pincode:</strong> <%= addresslist.pincode %></li>
+                        <li><strong>Notes:</strong> <%= addresslist.notes || 'No notes provided' %></li>
+                    </ul>
+                    <% }else{%>
+                        <p>nothing shipped</p>
+                   <% } %>
+        <% }) %>
+    <% } else { %>
+        <h1 class="cartstatus">Oops! Your cart is empty.</h1>
+    <% } %>
+    
+</body>
+</html>

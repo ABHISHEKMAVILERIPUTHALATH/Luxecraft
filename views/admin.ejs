@@ -4,38 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <!-- to view inserted image modify edit  -->
-
-    <div>
-        <div>
+    <div class="adminpage">
+        <div class="adminnav">
             <div>
-                <img src="" alt="">
+                <img src="/asset/logo.png" alt="">
                 <h2>Luxe resin craft</h2>
             </div>
-                <a href="/adminpost"> New post</a>
-                <a href="/logout">Logout</a>
+            <div class="adminaction">
+                <a href="/adminpost"><span class="material-symbols-outlined">add</span></a>
+                <a href="/orderlist" > <span class="material-symbols-outlined">work_history</span></a>
+                <a href="/removeunwanted"><span class="material-symbols-outlined">delete_sweep </span></a>
+                <a href="/logout"><span class="material-symbols-outlined">logout</span></a>
+            </div>
         </div>
-        <div id="itemview">
-            <span>item</span>
-            <span>product name</span>
-            <span>price</span>
-            <span>description</span>
-            <span>img</span>
-            
-            
-        </div>
+
         <% if(product){%>
             <% product.forEach((item) => { %>
         <div id="itemview">
-            <span><%= item.itemname %></span>
-            <span><%= item.productname %></span>
-            <span><%=item.price %></span>
-            <span><%= item.description %></span>
-            <img src="<%= item.img %>" alt="">
-            <a href="/adminedit/<%=item.id%>">edit</a>
-            <a href="/admindelete/<%=item.id%>">delete</a>
+            <div>
+                <img src="<%= item.img %>" alt="">
+            </div>
+            <div>
+                <span><%= item.itemname %></span>
+                <span><%= item.productname %></span>
+                <span><%=item.price %></span>
+                <span><%= item.description %></span>
+                <div>
+                    <a href="/adminedit/<%=item.id%>">edit</a>
+                    <a href="/admindelete/<%=item.id%>">delete</a>
+                </div>
+
+            </div>
         </div>
         <% })} %>
     </div>

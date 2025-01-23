@@ -32,6 +32,7 @@ async function handlefunctionget(link){
                 showToast(error.response.data, 'error');
             }
         } else {
+            console.log(error)
             showToast('Unable to connect to the server', 'error');
         }
     } finally {
@@ -47,10 +48,11 @@ async function search(item) {
         const shopElement=document.querySelector('#shop')
         shopElement.scrollIntoView({ behavior: 'smooth' });
         const searchResults = document.getElementById('product');
-        searchResults.innerHTML = '<p>Loading...</p>'; // Show loading indicator
+        showSpinner()// Show loading indicator
 
         const response = await axios.get(`http://localhost:3000/search?item=${encodeURIComponent(item)}`);
         const results = response.data;
+        console.log(results)
 
         searchResults.innerHTML = ''; // Clear loading indicator
 
@@ -69,7 +71,7 @@ async function search(item) {
     </div>
     <div class="overlay-icons">
         <span id="fullscreen" class="material-symbols-outlined" aria-label="Fullscreen" title="Fullscreen">open_in_full</span>
-        <a onclick="favoritetoggle(productId)">
+        <a onclick="favoritetoggle(${result.product_id})">
             <span
                 data-id="${result.product_id}" 
                 class="material-symbols-sharp favorite-icon" 
@@ -93,6 +95,8 @@ async function search(item) {
     } catch (error) {
         console.error('Error fetching search results:', error);
         document.getElementById('search-results').innerHTML = '<p>Error loading results. Please try again later.</p>';
+    }finally{
+        hideSpinner()
     }
 }
 
@@ -133,8 +137,7 @@ function showToast(message, type) {
 //favorite button partial loading
 async function favoritetoggle(id){
     try {
-        const loader = document.getElementById("loader");
-    loader.style.display = 'block';
+        showSpinner();
         // Make the API request to toggle favorite status
         const response = await axios.get(`http://localhost:3000/toggle/${id}`);
         const favoriteIcon = document.querySelector(`[data-id="${id}"]`);
@@ -151,6 +154,16 @@ async function favoritetoggle(id){
         console.error('Error toggling favorite:', error);
         showToast(error.response.data,'error')
     } finally{
-        loader.style.display='none'
+        hideSpinner();
     }
+}
+
+function showSpinner() {
+    document.querySelector('.spinner').style.display = 'block';
+    document.body.classList.add('blurred-background');
+}
+
+function hideSpinner() {
+    document.querySelector('.spinner').style.display = 'none';
+    document.body.classList.remove('blurred-background');
 }

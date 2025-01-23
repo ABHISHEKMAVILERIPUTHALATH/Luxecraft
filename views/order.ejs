@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div id="cartlist">
+        <div class="headder">
+            <img id="logo" src="/asset/logo.jpg" alt="">
+            <h2>your orders</h2>
+        </div>
+        <div id="cartitems">
+            <% if(locals.orders.length != 0){ %>
+                <% orders.forEach(item=>{%>
+            <div>
+                    <div>
+                        <img src="<%= item.img %>" alt="">
+                    </div>
+                    <div class="cartlistinfo">
+                        <span><%= item.productname %></span>
+                        <span><%= item.description %></span>
+                        <span>$<%= item.price %></span>
+                        <span><%= item.order_status %></span>
+                    </div>
+            </div>
+              <%  }) %>
+                <%  }else{%>
+                    <h1 class="cartstatus"> No orders placed</h1>
+              <%  } %>
+        </div>
+        
+    </div>
+</body>
+</html>

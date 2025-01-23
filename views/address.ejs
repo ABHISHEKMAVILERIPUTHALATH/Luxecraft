@@ -4,43 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <form id="orderForm" action="/submitaddress" method="POST">
-        <h2>Delivery Details</h2>
+    <div class="address">
+        <form id="orderForm" action="/submitaddress/<%=id %>" method="POST">
+            <h2 style="font-family: 'poppins';">Delivery Details</h2>
+            
+            <div>
+                <label for="fullName">Full Name:</label>
+                <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
+            </div>
+            
+            <div>
+                <label for="phone">Phone Number:</label>
+                <input type="number" id="phone" name="phone" minlength="9" maxlength="10" required placeholder="Enter your phone number">
+            </div>
         
-        <div>
-            <label for="fullName">Full Name:</label>
-            <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
-        </div>
+            <div>
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" required placeholder="Enter your delivery address"></textarea>
+            </div>
         
-        <div>
-            <label for="phone">Phone Number:</label>
-            <input type="text" id="phone" name="phone" required placeholder="Enter your phone number">
-        </div>
+            <div>
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" required placeholder="Enter your city">
+            </div>
+        
+            <div>
+                <label for="zipCode">Pin Code:</label>
+                <input type="text" id="zipCode" name="pincode" required placeholder="Enter your zip code">
+            </div>
+        
+            <div>
+                <label for="notes">Special Instructions or Notes:</label>
+                <textarea id="notes" name="notes" placeholder="Enter any special delivery instructions or notes"></textarea>
+            </div>
+        
+            <button type="submit"> continue</button>
+        </form>
+
+    </div>
     
-        <div>
-            <label for="address">Address:</label>
-            <textarea id="address" name="address" required placeholder="Enter your delivery address"></textarea>
-        </div>
-    
-        <div>
-            <label for="city">City:</label>
-            <input type="text" id="city" name="city" required placeholder="Enter your city">
-        </div>
-    
-        <div>
-            <label for="zipCode">Pin Code:</label>
-            <input type="text" id="zipCode" name="pincode" required placeholder="Enter your zip code">
-        </div>
-    
-        <div>
-            <label for="notes">Special Instructions or Notes:</label>
-            <textarea id="notes" name="notes" placeholder="Enter any special delivery instructions or notes"></textarea>
-        </div>
-    
-        <button type="submit">Continue</button>
-    </form>
     
 </body>
 </html>

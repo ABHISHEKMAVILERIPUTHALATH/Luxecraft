@@ -5,23 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     
 </head>
 <body>
-    <div class="login">
-        <div class="login-container">
-            <h1>Login</h1>
-            <form action="/login" method="post">
-                <input type="text" placeholder="Email" name="email" autocomplete="email" required>
-                <input type="password" placeholder="Password" name="password" required>
-                <p><%= error %></p>
-                <button type="submit">Login</button>
-                <button type="button" class="google-button">Login with Google</button>
+    <div class="login display font">
+        <div>
+            <img src="/asset/logo.jpg" alt="">
+        </div>
+        <div id="loginheader" class="login-container display">
+            <h2 >Login</h2>
+            <form action="/login" method="POST" class="login-form">
+                <div class="input-field">
+                    <span class="material-icons">account_circle</span>
+                    <input type="email" name="email" placeholder="Email" required>
+                </div>
+                <div class="input-field">
+                    <span class="material-icons">lock</span>
+                    <input id="password" type="password" name="password" placeholder="Password" required>
+                    <span class="show-password-icon" onclick="togglePassword()">👁️</span>
+                </div>
+                <div class="extra-options">
+                    <a href="/changepassword">Forget Password?</a>
+                </div>
+                <button type="submit" class="login-button">Login</button>
+                <p id="loginname">Or</p>
+                <button class="google-login">Google</button>
+                <p id="command">Don't have an account? <a href="/signup">Sign up</a></p>
             </form>
-            <p>Don't have an account? <a href="/signup">Sign up</a></p>
-    </div>
    
-</div>
+    </div>
+
+
+<script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const passwordIcon = document.querySelector('.show-password-icon');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        passwordIcon.textContent = '🙈'; // Change icon to "hide"
+      } else {
+        passwordInput.type = 'password';
+        passwordIcon.textContent = '👁️'; // Change icon back to "show"
+      }
+    }
+</script>
 </body>
 </html>

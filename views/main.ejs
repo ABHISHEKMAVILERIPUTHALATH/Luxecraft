@@ -8,181 +8,195 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="stylesheet" href="/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@1&family=Poppins&family=Faculty+Glyphic&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,700,1,-25&icon_names=favorite" />
 </head>
 <body>
     <div id="toast-container"></div>
     <div id="loader" class="spinner"></div>
+    <div id="list" class="storedetails hidden">
+        <ul>
+            <a href="#home"><li>Home</li></a>
+            <a href="#shop"><li>Shop</li></a> 
+            <a href="#about"><li>your doubts</li></a>
+            <a href="#aboutus"><li>About Us</li></a>
+        </ul>
+    </div>  
+    <input class="hidden" id="search" type="text" placeholder="Search" name="search"  oninput="searchbar()">
+    <!-- toggle boxes completed -->
     <div class="main">
-        <div class="container">
         <div class="navbar">
             <div class="pagedetails">
+                <span  id="menu" class="material-symbols-outlined">menu</span>
                 <img src="/asset/logo.jpg" alt="">
-                
-                    <h1>Luxe Resin Craft</h1>
             </div>
-            <div class="storedetails">
-                <ul>
-                    <a href="#home"><li>Home</li></a>
-                    <a href="#shop"><li>Shop</li></a> 
-                    <a href="#faqs"><li>Contact Us</li></a>
-                    <a href="#aboutus"><li>About Us</li></a>
-                </ul>
-
-            </div>  
-            <div class="pagefeature">
-                <div>
-                
-                        <input id="search" type="text" placeholder="Search" name="search"  oninput="searchbar()">
-                        <button  ><i class="material-icons">search</i></button>
-                </div>
+            <div class="pagefeature"> 
+                <a id="searchicon" ><i class="material-icons mousepointer">search</i></a>
                 <a href="<%= locals.user ? '/cartlist' : '#' %>" 
-                    onclick="<%= locals.user ? '' : 'cartlist()' %>"><i class="material-icons">shopping_cart</i></a>
-                <%if(locals.user){ %>
-                 <i id="profile" class="material-icons"  >person</i>
-                 <div class="hidden" id="box">
-                    <p id="closebtn">cancel</p>
-                    <p><%= user.displayname %></p>
-                    <p><%= user.email %></p>
-                     <a href="/changepassword">change password</a>
-                     <a href="/logout">logout</a>
-
-
-                 </div>
-
-                <%}else{ %>
-                <a id="person" href="/login"> <i class="material-icons"  >person</i></a>
-                <%} %>
+                    onclick="<%= locals.user ? '' : 'cartlist()' %>"><i class="material-icons mousepointer">shopping_cart</i></a>
+                    <%if(locals.user){ %>
+                        <i id="profile" class="material-icons mousepointer"  >person</i>
+                        <div class="hidden" id="box">
+                            <div>
+                                <p><%= user.displayname %></p>
+                                <span id="closebtn"  class="material-symbols-outlined">close</span>
+                            </div>
+                            <p><%= user.email %></p>
+                            <a href="/changepassword">change password</a>
+                            <a href="/logout">logout</a>
+                        </div>
+                    <%}else{ %>
+                    <a id="person" href="/login"> <i class="material-icons mousepointer"  >person</i></a>
+                    <%} %>
             </div>
         </div>
-    <div id="home" class="introduction">
-        <div class="big">
-            <h2>New collection</h2>
-            <h1>Handcrafted design</h1>
-            <p>Here’s a simple CSS snippet that can replicate the design from the image you provided.</p>
-            <button>shop now</button>
+        <div id="home" >
+            <div class="information ">
+                <h2 >New collection</h2>
+                <h1>Handcrafted design</h1>
+                <p>description</p>
+                <button>shop now</button>
+            </div>
+            <div class="photo">
+                <img src="/asset/logo.jpg" alt="">
+            </div>
+        </div>
+        
+        <div class="feature">
+            <img src="/asset/logo.jpg" alt="">
+            <img src="/asset/logo.jpg" alt="">
+            <img src="/asset/logo.jpg" alt="">
             <img src="/asset/logo.jpg" alt="">
         </div>
-        <div class="small upper">
-            <div class="information display">
-                <h2>New collection</h2>
-                <h1>Handcrafted design</h1>
-                <p>description</p>
-                <button>shop now</button>
+        <div id="sections" class="categories">
+            <div class="title">
+                <h2 >Our Categories</h2>
+                <h1>Shop By Catogory</h1>
             </div>
-            <div class="photo">
-                <img src="/asset/logo.jpg" alt="">
-            </div>
-            
-        </div>
-        <div class="small lower">
-            <div class="information display">
-                <h2>New collection</h2>
-                <h1>Handcrafted design</h1>
-                <p>description</p>
-                <button>shop now</button>
-            </div>
-            <div class="photo">
-                <img src="/asset/logo.jpg" alt="">
-            </div>
-            
-        </div>
-    </div>
-    
-    <div class="feature">
-        <img src="/asset/logo.jpg" alt="">
-        <img src="/asset/logo.jpg" alt="">
-        <img src="/asset/logo.jpg" alt="">
-        <img src="/asset/logo.jpg" alt="">
-    </div>
-    <div id="sections" class="categories display">
-        <div class="title">
-            <h2 class="font-color">Our Categories</h2>
-            <h1>Shop By Catogory</h1>
-         </div>
-        
-        
-            <div>
+            <div id="items">
                 <% if(locals.categories){%>
                     <% categories.forEach(category => {%>
                     <div onclick="search('<%= category.itemname %>')">
                         <img src="<%= category.img %>" alt="">
                         <h3><%= category.itemname %></h3>
                     </div>
-               <% });} %>
-                
-                
-            </div>   
-        <div>
-            <img src="/asset/logo.jpg" alt="">
-        </div>
-        
-    </div>
-    
-    <div id="shop" class="newcollection">
-        <div class="title">
-            <h2 class="font-color">New collection</h2>
-            <h1>Trendy Design Collection</h1>
-        </div>
-        
-        <div id="product" class="store">
-            <% if(product){%>
-            <% product.forEach((item) => { %>
-            <div  class="product">
-                <div class="image-setup">
-                    <div>
-                        <img id="fullimage" src="<%= item.img %>" alt="">
-                    </div>
-                    <div class="overlay-icons display">
-                        <span id="fullscreen" class="material-symbols-outlined">open_in_full</span>
-                        <a onclick="favoritetoggle(<%= item.id %>)">
-                            <span
-                                data-id="<%= item.id %>" 
-                                class="material-symbols-sharp favorite-icon <%= item.isfavorited ? 'favorited' : '' %>">
-                                favorite
-                            </span></a>
-                        <a onclick="cartadd(<%= item.id %>)"  ><span class="material-symbols-outlined">shopping_bag</span></a>
-                    </div>
+                <% });} %>
                     
-                </div>
-                <div class="info ">
-                    <span class="Product-category"><%= item.itemname %></span>
-                    <span class="Product-name"><%= item.productname %></span>
-                    <span class="price">$ <%=item.price %></span>
-                    <span><%= item.description %></span>
-                </div>
+             </div>   
+            
+        </div>
+        
+        <div id="shop" class="newcollection">
+            <div class="title">
+                <h2>New collection</h2>
+                <h1>Trendy Design Collection</h1>
             </div>
+            <div id="product" class="store">
+                <% if(product){%>
+                <% product.forEach((item) => { %>
+                <div  class="product">
+                    <div class="image-setup">
+                        <div>
+                            <img id="fullimage" src="<%= item.img %>" alt="">
+                        </div>
+                        <div class="overlay-icons">
+                            <span id="fullscreen" class="material-symbols-outlined">open_in_full</span>
+                            <a onclick="favoritetoggle(<%= item.id %>)"><span data-id="<%= item.id %>" class="material-symbols-sharp favorite-icon <%= item.isfavorited ? 'favorited' : '' %>">favorite</span></a>
+                            <a onclick="cartadd(<%= item.id %>)"  ><span class="material-symbols-outlined">shopping_bag</span></a>
+                        </div>
+                        
+                    </div>
+                    <div class="info ">
+                        <span ><%= item.itemname %></span>
+                        <span ><%= item.productname %></span>
+                        <span >$ <%=item.price %></span>
+                        <span><%= item.description %></span>
+                    </div>
+                </div>
 
-       <% }); } %>
+        <% }); } %> 
+            </div>
         </div>
-    </div>
-    <div id="about" class="faqs">
-        <div class="title">
-            <h2 class="font-color">FAQS</h2>
-            <h1>Questions?Look here</h1>
-        </div>
-        <div class="qa display">
-            <div class="display">
+         <div id="about" class="faqs">
+            <div class="title">
+                <h2 >FAQS</h2>
+                <h1>Questions?Look here</h1>
+            </div>
+            <div class="qa">
                 <div>
                     <span>what are your qureries</span>
-                    <span>+</span>
+                    <span class="show-answer">+</span>
                 </div>
-                <span>answer</span>
+                <span class="answer hidden mousepointer" >answer</span>
+                <div>
+                    <span>what are your qureries</span>
+                    <span class="show-answer">+</span>
+                </div>
+                <span class="answer hidden mousepointer" >answer</span>
+                <div>
+                    <span>what are your qureries</span>
+                    <span class="show-answer">+</span>
+                </div>
+                <span class="answer hidden mousepointer" >answer</span>
+                <div>
+                    <span>what are your qureries</span>
+                    <span class="show-answer">+</span>
+                </div>
+                <span class="answer hidden mousepointer" >answer</span>
+                <div>
+                    <span>what are your qureries</span>
+                    <span class="show-answer">+</span>
+                </div>
+                <span class="answer hidden mousepointer" >answer</span>
+                <div>
+                    <span>what are your qureries</span>
+                    <span class="show-answer">+</span>
+                </div>
+                <span class="answer hidden mousepointer" >answer</span>
+                <div>
+                    <span>what are your qureries</span>
+                    <span class="show-answer">+</span>
+                </div>
+                <span class="answer hidden mousepointer" >answer</span>
             </div>
-
         </div>
-    </div>
-    <div class="about"></div>
-    <div class="footer">
+        <div class="about">
+            <a href="/orders">your orders</a>
+        </div>
+       <!-- <div class="footer"> -->
         
-    </div>
+    <!-- </div> -->
    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="./function.js"></script>
 <script>
+        const list=document.getElementById('list')
+       document.getElementById('menu').addEventListener('click',(e)=>{
+        console.log('clicked')
+        list.classList.toggle('hidden')
+    })
+    document.getElementById('searchicon').addEventListener('click',(e)=>{
+     console.log('clicked');
+     
+     document.getElementById('search').classList.toggle('hidden')
+ })
+ document.querySelectorAll('.show-answer').forEach((button, index) => {
+    button.addEventListener('click', () => {
+        // Get the corresponding answer element
+        const answer = document.querySelectorAll('.answer')[index];
+
+        // Toggle the hidden class
+        answer.classList.toggle('hidden');
+
+        // Update the button text
+        if (button.innerHTML === '+') {
+            button.innerHTML = '-';
+        } else {
+            button.innerHTML = '+';
+        }
+    });
+});
 
         const box=document.getElementById('box');
         const closebtn=document.getElementById('closebtn');
@@ -192,8 +206,10 @@
         
        })
        closebtn.addEventListener('click',(e)=>{
+        console.log('cancel clicked')
         box.classList.add('hidden')
        });
+
 
         function searchbar(){
         const searchvalue= document.querySelector('#search').value
@@ -208,5 +224,6 @@
             handlefunctionget(`http://localhost:3000/cart/${id}`)
         }
 </script>
+<script src="./function.js" defer></script>
 </body>
 </html>
